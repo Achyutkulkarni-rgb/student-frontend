@@ -3,6 +3,8 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style.css';
 
+const API = 'https://student-backend-wm44.onrender.com'; // ✅ Correct backend URL
+
 function App() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
@@ -16,7 +18,7 @@ function App() {
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post('https://student-backend-1-eump.onrender.com', formData);
+      const res = await axios.post(`${API}/signup`, formData);
       setMessage(res.data.message);
     } catch {
       setMessage('Signup failed.');
@@ -25,11 +27,9 @@ function App() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://student-backend-1-eump.onrender.com', formData);
+      const res = await axios.post(`${API}/login`, formData);
       setMessage(res.data.message);
-      if (res.data.success) {
-        setLoggedIn(true);
-      }
+      if (res.data.success) setLoggedIn(true);
     } catch {
       setMessage('Login failed.');
     }
@@ -47,23 +47,21 @@ function App() {
     setCartItems([...cartItems, item]);
   };
 
-  const handleRemoveFromCart = (index) => {
-    const updatedCart = [...cartItems];
-    updatedCart.splice(index, 1);
-    setCartItems(updatedCart);
+  const handleRemoveFromCart = (i) => {
+    const updated = [...cartItems];
+    updated.splice(i, 1);
+    setCartItems(updated);
   };
 
-  const totalAmount = cartItems.reduce((acc, item) => acc + item.price, 0);
-  const gst = parseFloat((totalAmount * 0.18).toFixed(2));
-  const grandTotal = parseFloat((totalAmount + gst).toFixed(2));
+  const totalAmount = cartItems.reduce((sum, i) => sum + i.price, 0);
+  const gst = +(totalAmount * 0.18).toFixed(2);
+  const grandTotal = +(totalAmount + gst).toFixed(2);
 
   const handleBuyNow = async () => {
-    if (cartItems.length === 0) {
-      alert("Cart is empty!");
-      return;
-    }
+    if (!cartItems.length) return alert('Cart is empty!');
+
     try {
-      const res = await axios.post('https://student-backend-1-eump.onrender.com', {
+      const res = await axios.post(`${API}/order`, {
         username: formData.username,
         items: cartItems,
         total: totalAmount,
@@ -73,8 +71,9 @@ function App() {
       alert(res.data.message);
       setCartItems([]);
       setShowCart(false);
-    } catch {
-      alert("Failed to place order.");
+    } catch (err) {
+      console.error(err);
+      alert('Failed to place order.');
     }
   };
 
@@ -109,7 +108,12 @@ function App() {
                   {cartItems.map((item, idx) => (
                     <div key={idx} className="cart-item">
                       <p>{item.name} — ₹{item.price}</p>
-                      <button className="remove-btn" onClick={() => handleRemoveFromCart(idx)}>Remove</button>
+                      <button
+                        className="remove-btn"
+                        onClick={() => handleRemoveFromCart(idx)}
+                      >
+                        Remove
+                      </button>
                     </div>
                   ))}
                   <hr />
@@ -143,98 +147,55 @@ function App() {
   );
 }
 
-function HomePage({ handleAddToCart }) {
-  const products = [
-    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp' },
-    { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp' },
-    { name: "Casual Shirt", price: 399, image: '/images/download3.webp' },
-    { name: "Saree", price: 1999, image: '/images/saree1.jpeg' },
-    { name: "Saree", price: 1999, image: '/images/saree2.jpeg' },
-    { name: "Designer Dress", price: 4999, image: '/images/saree3.jpeg' },
-    { name: "Shoes", price: 1500, image: '/images/shoes.jpeg' },
-    { name: "Handbag", price: 2500, image: '/images/hand.jpeg' },
-    { name: "Smart Watch", price: 3499, image: '/images/watch.jpeg' }
-  ];
+// Placeholder components (you can update as needed)
+const HomePage = ({ handleAddToCart }) => (
+  <div className="home">
+    <h2>Products</h2>
+    <button onClick={() => handleAddToCart({ name: 'Product A', price: 100 })}>
+      Add Product A - ₹100
+    </button>
+  </div>
+);
 
-  return (
-    <div className="shop-grid">
-      {products.map((item, idx) => (
-        <div key={idx} className="product-card">
-          <img src={item.image} alt={item.name} className="product-image" />
-          <h3>{item.name}</h3>
-          <p>Price: ₹{item.price}</p>
-          <button className="buy-btn" onClick={() => handleAddToCart(item)}>
-            Add to Cart
-          </button>
-        </div>
-      ))}
+const NextPage = ({ handleAddToCart }) => (
+  <div className="next-page">
+    <h2>More Products</h2>
+    <button onClick={() => handleAddToCart({ name: 'Product B', price: 200 })}>
+      Add Product B - ₹200
+    </button>
+  </div>
+);
+
+const ContactPage = () => (
+  <div className="contact">
+    <h2>Contact Us</h2>
+    <p>For any queries, contact: support@example.com</p>
+  </div>
+);
+
+const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message }) => (
+  <div className="login">
+    <h2>Login / Signup</h2>
+    <input
+      type="text"
+      name="username"
+      placeholder="Username"
+      value={formData.username}
+      onChange={handleChange}
+    />
+    <input
+      type="password"
+      name="password"
+      placeholder="Password"
+      value={formData.password}
+      onChange={handleChange}
+    />
+    <div>
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleSignup}>Signup</button>
     </div>
-  );
-}
-
-function NextPage({ handleAddToCart }) {
-  const products = [
-    { name: "Apple Mobile", price: 55000, image: '/images/apple.webp' },
-    { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg' },
-    { name: "Samsung Mobile", price: 25000, image: '/images/samsung.webp' },
-    { name: "MacBook", price: 80000, image: '/images/Mac.jpeg' },
-    { name: "Dell Laptop", price: 55000, image: '/images/Dell.webp' },
-    { name: "HP Laptop", price: 65000, image: '/images/HP.webp' },
-    { name: "JBL Bag", price: 2999, image: '/images/jbl.jpeg' },
-    { name: "Boult Bag", price: 1299, image: '/images/boult.jpeg' },
-    { name: "Boat Bag", price: 1599, image: '/images/boat.jpeg' }
-  ];
-
-  return (
-    <div className="shop-grid">
-      {products.map((item, idx) => (
-        <div key={idx} className="product-card">
-          <img src={item.image} alt={item.name} className="product-image" />
-          <h3>{item.name}</h3>
-          <p>Price: ₹{item.price}</p>
-          <button className="buy-btn" onClick={() => handleAddToCart(item)}>
-            Add to Cart
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ContactPage() {
-  return (
-    <div className="contact-page">
-      <h1>Contact Information</h1>
-      <p>Name: Achyut Kulkarni</p>
-      <p>Email: achyutk105@gmail.com</p>
-      <p>Phone: +91‑9620533824</p>
-    </div>
-  );
-}
-
-function LoginPage({ formData, handleChange, handleSignup, handleLogin, message }) {
-  return (
-    <div className="form-container">
-      <h1>Shopping App</h1>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-      />
-      <button className="login-btn" onClick={handleSignup}>Sign Up</button>
-      <button className="login-btn" onClick={handleLogin}>Login</button>
-      <p>{message}</p>
-    </div>
-  );
-}
+    <p>{message}</p>
+  </div>
+);
 
 export default App;
