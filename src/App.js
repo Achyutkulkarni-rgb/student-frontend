@@ -149,15 +149,15 @@ function App() {
 
 const HomePage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Men's Shirt", price: 999, image: '/src/images/shopping1.webp' },
-    { name: "Men's Shirt", price: 999, image: '/src/images/shopping2.webp' },
-    { name: "Casual Shirt", price: 399, image: '/src/images/download3.webp' },
-    { name: "Saree", price: 1999, image: '/src/images/saree1.jpeg' },
-    { name: "Saree", price: 1999, image: '/src/images/saree2.jpeg' },
-    { name: "Designer Dress", price: 4999, image: '/src/images/saree3.jpeg' },
-    { name: "Shoes", price: 1500, image: '/src/images/shoes.jpeg' },
-    { name: "Handbag", price: 2500, image: '/src/images/hand.jpeg' },
-    { name: "Smart Watch", price: 3499, image: '/src/images/watch.jpeg' }
+    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp' },
+    { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp' },
+    { name: "Casual Shirt", price: 399, image: '/images/download3.webp' },
+    { name: "Saree", price: 1999, image: '/images/saree1.jpeg' },
+    { name: "Saree", price: 1999, image: '/images/saree2.jpeg' },
+    { name: "Designer Dress", price: 4999, image: '/images/saree3.jpeg' },
+    { name: "Shoes", price: 1500, image: '/images/shoes.jpeg' },
+    { name: "Handbag", price: 2500, image: '/images/hand.jpeg' },
+    { name: "Smart Watch", price: 3499, image: '/images/watch.jpeg' }
   ];
 
   return (
@@ -179,15 +179,15 @@ const HomePage = ({ handleAddToCart }) => {
 
 const NextPage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Apple Mobile", price: 55000, image: '/src/images/apple.webp' },
-    { name: "Nothing Mobile", price: 30000, image: '/src/images/ntg.jpeg' },
-    { name: "Samsung Mobile", price: 25000, image: '/src/images/samsung.webp' },
-    { name: "MacBook", price: 80000, image: '/src/images/Mac.jpeg' },
-    { name: "Dell Laptop", price: 55000, image: '/src/images/Dell.webp' },
-    { name: "HP Laptop", price: 65000, image: '/src/images/HP.webp' },
-    { name: "JBL Bag", price: 2999, image: '/src/images/jbl.jpeg' },
-    { name: "Boult Bag", price: 1299, image: '/src/images/boult.jpeg' },
-    { name: "Boat Bag", price: 1599, image: '/src/images/boat.jpeg' }
+    { name: "Apple Mobile", price: 55000, image: '/images/apple.webp' },
+    { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg' },
+    { name: "Samsung Mobile", price: 25000, image: '/images/samsung.webp' },
+    { name: "MacBook", price: 80000, image: '/images/Mac.jpeg' },
+    { name: "Dell Laptop", price: 55000, image: '/images/Dell.webp' },
+    { name: "HP Laptop", price: 65000, image: '/images/HP.webp' },
+    { name: "JBL Bag", price: 2999, image: '/images/jbl.jpeg' },
+    { name: "Boult Bag", price: 1299, image: '/images/boult.jpeg' },
+    { name: "Boat Bag", price: 1599, image: '/images/boat.jpeg' }
   ];
 
   return (
