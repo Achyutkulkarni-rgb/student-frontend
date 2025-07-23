@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style.css';
 
-const API = 'https://student-backend-wm44.onrender.com'; // ✅ Correct backend URL
+const API = 'https://student-backend-wm44.onrender.com'; // backend URL
 
 function App() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -147,24 +147,65 @@ function App() {
   );
 }
 
-// Placeholder components (you can update as needed)
-const HomePage = ({ handleAddToCart }) => (
-  <div className="home">
-    <h2>Products</h2>
-    <button onClick={() => handleAddToCart({ name: 'Product A', price: 100 })}>
-      Add Product A - ₹100
-    </button>
-  </div>
-);
+const HomePage = ({ handleAddToCart }) => {
+  const products = [
+    { name: "Men's Shirt", price: 999, image: '/src/images/shopping1.webp' },
+    { name: "Men's Shirt", price: 999, image: '/src/images/shopping2.webp' },
+    { name: "Casual Shirt", price: 399, image: '/src/images/download3.webp' },
+    { name: "Saree", price: 1999, image: '/src/images/saree1.jpeg' },
+    { name: "Saree", price: 1999, image: '/src/images/saree2.jpeg' },
+    { name: "Designer Dress", price: 4999, image: '/src/images/saree3.jpeg' },
+    { name: "Shoes", price: 1500, image: '/src/images/shoes.jpeg' },
+    { name: "Handbag", price: 2500, image: '/src/images/hand.jpeg' },
+    { name: "Smart Watch", price: 3499, image: '/src/images/watch.jpeg' }
+  ];
 
-const NextPage = ({ handleAddToCart }) => (
-  <div className="next-page">
-    <h2>More Products</h2>
-    <button onClick={() => handleAddToCart({ name: 'Product B', price: 200 })}>
-      Add Product B - ₹200
-    </button>
-  </div>
-);
+  return (
+    <div className="products">
+      <h2>Clothing & Accessories</h2>
+      <div className="product-list">
+        {products.map((item, index) => (
+          <div className="product-card" key={index}>
+            <img src={item.image} alt={item.name} />
+            <h4>{item.name}</h4>
+            <p>₹{item.price}</p>
+            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const NextPage = ({ handleAddToCart }) => {
+  const products = [
+    { name: "Apple Mobile", price: 55000, image: '/src/images/apple.webp' },
+    { name: "Nothing Mobile", price: 30000, image: '/src/images/ntg.jpeg' },
+    { name: "Samsung Mobile", price: 25000, image: '/src/images/samsung.webp' },
+    { name: "MacBook", price: 80000, image: '/src/images/Mac.jpeg' },
+    { name: "Dell Laptop", price: 55000, image: '/src/images/Dell.webp' },
+    { name: "HP Laptop", price: 65000, image: '/src/images/HP.webp' },
+    { name: "JBL Bag", price: 2999, image: '/src/images/jbl.jpeg' },
+    { name: "Boult Bag", price: 1299, image: '/src/images/boult.jpeg' },
+    { name: "Boat Bag", price: 1599, image: '/src/images/boat.jpeg' }
+  ];
+
+  return (
+    <div className="products">
+      <h2>Electronics & Gadgets</h2>
+      <div className="product-list">
+        {products.map((item, index) => (
+          <div className="product-card" key={index}>
+            <img src={item.image} alt={item.name} />
+            <h4>{item.name}</h4>
+            <p>₹{item.price}</p>
+            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const ContactPage = () => (
   <div className="contact">
