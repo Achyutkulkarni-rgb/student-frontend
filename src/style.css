@@ -97,6 +97,16 @@
   border-bottom: none;
 }
 
+.remove-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
 /* Login Page */
 .form-container {
   max-width: 400px;
@@ -131,14 +141,4 @@
 .contact-page {
   text-align: center;
   padding: 40px;
-}
-
-.remove-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  margin-left: 10px;
-  cursor: pointer;
-  border-radius: 3px;
 }
