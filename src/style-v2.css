@@ -60,7 +60,6 @@
   width: 250px;
 }
 
-
 .product-image {
   width: 100%;
   max-width: 150px;
@@ -115,34 +114,61 @@
   border-radius: 3px;
 }
 
-/* Login Page */
-.form-container {
+/* Login Page - NEW Updated Style */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+}
+
+.login-form {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
   max-width: 400px;
-  margin: 80px auto;
-  background: #f9f9f9;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
   text-align: center;
 }
 
-.form-container input {
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+.login-form h2 {
+  margin-bottom: 25px;
+  color: #333;
 }
 
-.login-btn {
+.login-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 12px;
   background-color: #00bcd4;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  margin: 10px 5px;
-  border-radius: 5px;
+  color: white;
   font-weight: bold;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #008c9e;
+}
+
+.message {
+  margin-top: 15px;
+  color: red;
+  font-size: 14px;
 }
 
 /* Contact Page */

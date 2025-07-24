@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style-v2.css';
 
-const API = 'https://student-backend-wm44.onrender.com'; // backend URL
+const API = 'https://student-backend-wm44.onrender.com';
 
 function App() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -59,7 +59,6 @@ function App() {
 
   const handleBuyNow = async () => {
     if (!cartItems.length) return alert('Cart is empty!');
-
     try {
       const res = await axios.post(`${API}/order`, {
         username: formData.username,
@@ -108,21 +107,14 @@ function App() {
                   {cartItems.map((item, idx) => (
                     <div key={idx} className="cart-item">
                       <p>{item.name} — ₹{item.price}</p>
-                      <button
-                        className="remove-btn"
-                        onClick={() => handleRemoveFromCart(idx)}
-                      >
-                        Remove
-                      </button>
+                      <button className="remove-btn" onClick={() => handleRemoveFromCart(idx)}>Remove</button>
                     </div>
                   ))}
                   <hr />
                   <p>Total: ₹{totalAmount}</p>
                   <p>GST (18%): ₹{gst}</p>
                   <h4>Grand Total: ₹{grandTotal}</h4>
-                  <button className="buy-now-btn" onClick={handleBuyNow}>
-                    Buy Now
-                  </button>
+                  <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
                 </>
               )}
             </div>
@@ -147,6 +139,33 @@ function App() {
   );
 }
 
+const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message }) => (
+  <div className="login-page">
+    <div className="login-box">
+      <h2>Login / Signup</h2>
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value={formData.username}
+        onChange={handleChange}
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+      />
+      <div className="login-btn-group">
+        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleSignup}>Signup</button>
+      </div>
+      <p className="login-message">{message}</p>
+    </div>
+  </div>
+);
+
 const HomePage = ({ handleAddToCart }) => {
   const products = [
     { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp' },
@@ -164,16 +183,15 @@ const HomePage = ({ handleAddToCart }) => {
     <div className="products">
       <h2>Clothing & Accessories</h2>
       <div className="product-list">
-  {products.map((product, index) => (
-    <div className="product-card" key={index}>
-      <img src={product.image} alt={product.name} style={{ width: '200px', height: '200px' }} />
-      <h3>{product.name}</h3>
-      <p>₹{product.price}</p>
-      <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
-    </div>
-  ))}
-</div>
-
+        {products.map((product, index) => (
+          <div className="product-card" key={index}>
+            <img src={product.image} alt={product.name} style={{ width: '200px', height: '200px' }} />
+            <h3>{product.name}</h3>
+            <p>₹{product.price}</p>
+            <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -212,31 +230,6 @@ const ContactPage = () => (
   <div className="contact">
     <h2>Contact Us</h2>
     <p>For any queries, contact: support@example.com</p>
-  </div>
-);
-
-const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message }) => (
-  <div className="login">
-    <h2>Login / Signup</h2>
-    <input
-      type="text"
-      name="username"
-      placeholder="Username"
-      value={formData.username}
-      onChange={handleChange}
-    />
-    <input
-      type="password"
-      name="password"
-      placeholder="Password"
-      value={formData.password}
-      onChange={handleChange}
-    />
-    <div>
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleSignup}>Signup</button>
-    </div>
-    <p>{message}</p>
   </div>
 );
 
