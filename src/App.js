@@ -10,7 +10,8 @@ function App() {
   const [message, setMessage] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const [showCart, setShowCart] = useState(false);
+  const [showCart, setShowCart] = useState(false);git push origin main
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -229,7 +230,7 @@ const NextPage = ({ handleAddToCart }) => {
 const ContactPage = () => (
   <div className="contact">
     <h2>Contact Us</h2>
-    <p>For any queries, contact: support@example.com</p>
+    <p>For any queries, contact: achyutk574@gmail.com</p>
   </div>
 );
 
