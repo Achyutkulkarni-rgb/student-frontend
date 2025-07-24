@@ -164,15 +164,16 @@ const HomePage = ({ handleAddToCart }) => {
     <div className="products">
       <h2>Clothing & Accessories</h2>
       <div className="product-list">
-        {products.map((item, index) => (
-          <div className="product-card" key={index}>
-            <img src={item.image} alt={item.name} />
-            <h4>{item.name}</h4>
-            <p>₹{item.price}</p>
-            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
-          </div>
-        ))}
-      </div>
+  {products.map((product, index) => (
+    <div className="product-card" key={index}>
+      <img src={product.image} alt={product.name} style={{ width: '200px', height: '200px' }} />
+      <h3>{product.name}</h3>
+      <p>₹{product.price}</p>
+      <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 };
