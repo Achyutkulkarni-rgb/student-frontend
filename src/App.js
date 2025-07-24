@@ -10,7 +10,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const [showCart, setShowCart] = useState(false);git push origin main
+  const [showCart, setShowCart] = useState(false);
 
 
   const handleChange = (e) => {
