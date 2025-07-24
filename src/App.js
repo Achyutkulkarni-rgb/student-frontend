@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import './style.css';
+import './style-v2.css';
 
 const API = 'https://student-backend-wm44.onrender.com'; // backend URL
 
