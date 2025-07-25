@@ -100,22 +100,20 @@ function App() {
       {loggedIn ? (
         <>
           <div className="navbar">
-  <div className="nav-left">
-    Welcome, {userEmail}
-  </div>
-
-  <div className="nav-right">
-    <div className="nav-links">
-      <a href="/">Home</a>
-      <a href="/next">Next Page</a>
-      <a href="/profile">Profile</a>
-      <a href="/contact">Contact</a>
-    </div>
-    <button className="cart-btn">Cart ({cartCount})</button>
-    <button className="logout-btn" onClick={handleLogout}>Logout</button>
-  </div>
-</div>
-
+            <button className="welcome-btn">Welcome, {formData.username}</button>
+            <div className="nav-links">
+              <Link to="/">Home</Link>
+              <Link to="/page2">Next Page</Link>
+              <Link to="/profile">Profile</Link>
+              <Link to="/contact">Contact</Link>
+            </div>
+            <div className="nav-actions">
+              <button className="cart-btn" onClick={() => setShowCart(!showCart)}>
+                Cart ({cartItems.length})
+              </button>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
+          </div>
 
           {showCart && (
             <div className="cart-dropdown">
