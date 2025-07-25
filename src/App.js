@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style-v2.css';
 
 const API = 'https://student-backend-wm44.onrender.com';
@@ -13,8 +13,6 @@ function App() {
   const [showCart, setShowCart] = useState(false);
   const [address, setAddress] = useState('');
   const [showAddressForm, setShowAddressForm] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const cartCount = cartItems.length;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,10 +31,7 @@ function App() {
     try {
       const res = await axios.post(`${API}/login`, formData);
       setMessage(res.data.message);
-      if (res.data.success) {
-        setLoggedIn(true);
-        setUserEmail(formData.username || ''); // assuming username is email
-      }
+      if (res.data.success) setLoggedIn(true);
     } catch {
       setMessage('Login failed.');
     }
@@ -49,7 +44,6 @@ function App() {
     setCartItems([]);
     setShowCart(false);
     setAddress('');
-    setUserEmail('');
   };
 
   const handleAddToCart = (item) => {
@@ -106,20 +100,22 @@ function App() {
       {loggedIn ? (
         <>
           <div className="navbar">
-            <div className="nav-left">
-              <span className="welcome-msg">Welcome, {userEmail}</span>
-            </div>
-            <div className="nav-right">
-              <div className="nav-links">
-                <a href="/">Home</a>
-                <a href="/next">Next Page</a>
-                <a href="/profile">Profile</a>
-                <a href="/contact">Contact</a>
-              </div>
-              <button className="cart-btn" onClick={() => setShowCart(!showCart)}>Cart ({cartCount})</button>
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            </div>
-          </div>
+  <div className="nav-left">
+    Welcome, {userEmail}
+  </div>
+
+  <div className="nav-right">
+    <div className="nav-links">
+      <a href="/">Home</a>
+      <a href="/next">Next Page</a>
+      <a href="/profile">Profile</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <button className="cart-btn">Cart ({cartCount})</button>
+    <button className="logout-btn" onClick={handleLogout}>Logout</button>
+  </div>
+</div>
+
 
           {showCart && (
             <div className="cart-dropdown">
@@ -161,7 +157,7 @@ function App() {
 
           <Routes>
             <Route path="/" element={<HomePage handleAddToCart={handleAddToCart} />} />
-            <Route path="/next" element={<NextPage handleAddToCart={handleAddToCart} />} />
+            <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} />} />
             <Route path="/profile" element={
               <ProfilePage
                 formData={formData}
@@ -214,7 +210,7 @@ const ProfilePage = ({ formData, handleChange, handleProfileSubmit }) => (
 
 const HomePage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
+   { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
     { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp', specs: "Formal, Full Sleeve, Easy Iron" },
     { name: "Casual Shirt", price: 399, image: '/images/download3.webp', specs: "Polyester, Lightweight, Printed" },
     { name: "Saree", price: 1999, image: '/images/saree1.jpeg', specs: "Silk Blend, Traditional Look" },
