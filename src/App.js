@@ -6,12 +6,11 @@ import './style-v2.css';
 const API = 'https://student-backend-wm44.onrender.com';
 
 function App() {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', password: '', name: '', email: '' });
   const [message, setMessage] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [showCart, setShowCart] = useState(false);
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +37,7 @@ function App() {
 
   const handleLogout = () => {
     setLoggedIn(false);
-    setFormData({ username: '', password: '' });
+    setFormData({ username: '', password: '', name: '', email: '' });
     setMessage('');
     setCartItems([]);
     setShowCart(false);
@@ -86,6 +85,7 @@ function App() {
             <div className="nav-links">
               <Link to="/">Home</Link>
               <Link to="/page2">Next Page</Link>
+              <Link to="/profile">Profile</Link>
               <Link to="/contact">Contact</Link>
             </div>
             <div className="nav-actions">
@@ -125,6 +125,7 @@ function App() {
             <Route path="/" element={<HomePage handleAddToCart={handleAddToCart} />} />
             <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/profile" element={<ProfilePage formData={formData} setFormData={setFormData} />} />
           </Routes>
         </>
       ) : (
@@ -144,20 +145,8 @@ const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message 
   <div className="login-page">
     <div className="login-box">
       <h2>Login / Signup</h2>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-      />
+      <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
+      <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
       <div className="login-btn-group">
         <button onClick={handleLogin}>Login</button>
         <button onClick={handleSignup}>Signup</button>
@@ -167,17 +156,36 @@ const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message 
   </div>
 );
 
+const ProfilePage = ({ formData, setFormData }) => {
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  return (
+    <div className="profile-page">
+      <h2>User Profile</h2>
+      <label>
+        Full Name:
+        <input type="text" name="name" value={formData.name} onChange={handleChange} />
+      </label>
+      <label>
+        Email:
+        <input type="email" name="email" value={formData.email} onChange={handleChange} />
+      </label>
+      <p style={{ color: 'green' }}>Profile saved locally</p>
+    </div>
+  );
+};
+
 const HomePage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp' },
-    { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp' },
-    { name: "Casual Shirt", price: 399, image: '/images/download3.webp' },
-    { name: "Saree", price: 1999, image: '/images/saree1.jpeg' },
-    { name: "Saree", price: 1999, image: '/images/saree2.jpeg' },
-    { name: "Designer Dress", price: 4999, image: '/images/saree3.jpeg' },
-    { name: "Shoes", price: 1500, image: '/images/shoes.jpeg' },
-    { name: "Handbag", price: 2500, image: '/images/hand.jpeg' },
-    { name: "Smart Watch", price: 3499, image: '/images/watch.jpeg' }
+    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
+    { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp', specs: "Formal, Full Sleeve, Easy Iron" },
+    { name: "Casual Shirt", price: 399, image: '/images/download3.webp', specs: "Polyester, Lightweight, Printed" },
+    { name: "Saree", price: 1999, image: '/images/saree1.jpeg', specs: "Silk Blend, Traditional Look" },
+    { name: "Saree", price: 1999, image: '/images/saree2.jpeg', specs: "Chiffon, Party Wear, Dry Clean" },
+    { name: "Designer Dress", price: 4999, image: '/images/saree3.jpeg', specs: "Modern, Sleeveless, Georgette" },
+    { name: "Shoes", price: 1500, image: '/images/shoes.jpeg', specs: "Sports Style, Rubber Sole, Size 6-11" },
+    { name: "Handbag", price: 2500, image: '/images/hand.jpeg', specs: "Leather Finish, 3 Pockets, Tan Color" },
+    { name: "Smart Watch", price: 3499, image: '/images/watch.jpeg', specs: "Bluetooth, Fitness Tracking, Waterproof" }
   ];
 
   return (
@@ -186,9 +194,10 @@ const HomePage = ({ handleAddToCart }) => {
       <div className="product-list">
         {products.map((product, index) => (
           <div className="product-card" key={index}>
-            <img src={product.image} alt={product.name} style={{ width: '200px', height: '200px' }} />
+            <img src={product.image} alt={product.name} />
             <h3>{product.name}</h3>
             <p>₹{product.price}</p>
+            <p className="specs">{product.specs}</p>
             <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
           </div>
         ))}
@@ -199,15 +208,15 @@ const HomePage = ({ handleAddToCart }) => {
 
 const NextPage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Apple Mobile", price: 55000, image: '/images/apple.webp' },
-    { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg' },
-    { name: "Samsung Mobile", price: 25000, image: '/images/samsung.webp' },
-    { name: "MacBook", price: 80000, image: '/images/Mac.jpeg' },
-    { name: "Dell Laptop", price: 55000, image: '/images/Dell.webp' },
-    { name: "HP Laptop", price: 65000, image: '/images/HP.webp' },
-    { name: "JBL Bag", price: 2999, image: '/images/jbl.jpeg' },
-    { name: "Boult Bag", price: 1299, image: '/images/boult.jpeg' },
-    { name: "Boat Bag", price: 1599, image: '/images/boat.jpeg' }
+    { name: "Apple Mobile", price: 55000, image: '/images/apple.webp', specs: "128GB, iOS 17, Dual Camera" },
+    { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg', specs: "Glyph Interface, Snapdragon 778G+" },
+    { name: "Samsung Mobile", price: 25000, image: '/images/samsung.webp', specs: "Galaxy Series, 5G, AMOLED Display" },
+    { name: "MacBook", price: 80000, image: '/images/Mac.jpeg', specs: "M1, 8GB RAM, 256GB SSD" },
+    { name: "Dell Laptop", price: 55000, image: '/images/Dell.webp', specs: "Intel i5, 8GB RAM, 512GB SSD" },
+    { name: "HP Laptop", price: 65000, image: '/images/HP.webp', specs: "Ryzen 5, Windows 11, 1TB HDD" },
+    { name: "JBL Bag", price: 2999, image: '/images/jbl.jpeg', specs: "Waterproof, Large Size, 2 Compartments" },
+    { name: "Boult Bag", price: 1299, image: '/images/boult.jpeg', specs: "Laptop Compatible, Stylish Design" },
+    { name: "Boat Bag", price: 1599, image: '/images/boat.jpeg', specs: "Trendy, Compact, Eco Material" }
   ];
 
   return (
@@ -219,6 +228,7 @@ const NextPage = ({ handleAddToCart }) => {
             <img src={item.image} alt={item.name} />
             <h4>{item.name}</h4>
             <p>₹{item.price}</p>
+            <p className="specs">{item.specs}</p>
             <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
           </div>
         ))}
