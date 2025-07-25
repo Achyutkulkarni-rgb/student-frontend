@@ -11,6 +11,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [address, setAddress] = useState('');
+  const [showAddressForm, setShowAddressForm] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,39 +43,56 @@ function App() {
     setMessage('');
     setCartItems([]);
     setShowCart(false);
+    setAddress('');
   };
 
   const handleAddToCart = (item) => {
     setCartItems([...cartItems, item]);
   };
 
-  const handleRemoveFromCart = (i) => {
+  const handleRemoveFromCart = (index) => {
     const updated = [...cartItems];
-    updated.splice(i, 1);
+    updated.splice(index, 1);
     setCartItems(updated);
   };
 
-  const totalAmount = cartItems.reduce((sum, i) => sum + i.price, 0);
-  const gst = +(totalAmount * 0.18).toFixed(2);
-  const grandTotal = +(totalAmount + gst).toFixed(2);
+  const total = cartItems.reduce((sum, i) => sum + i.price, 0);
+  const gst = +(total * 0.18).toFixed(2);
+  const grandTotal = +(total + gst).toFixed(2);
 
-  const handleBuyNow = async () => {
-    if (!cartItems.length) return alert('Cart is empty!');
+  const handleBuyNow = () => {
+    if (cartItems.length === 0) return alert('Cart is empty!');
+    setShowAddressForm(true);
+  };
+
+  const submitOrderWithAddress = async () => {
+    if (!address.trim()) {
+      alert('Please enter your address');
+      return;
+    }
+
     try {
       const res = await axios.post(`${API}/order`, {
         username: formData.username,
+        address,
         items: cartItems,
-        total: totalAmount,
+        total,
         gst,
         grandTotal
       });
+
       alert(res.data.message);
       setCartItems([]);
+      setAddress('');
       setShowCart(false);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to place order.');
+      setShowAddressForm(false);
+    } catch {
+      alert('Order failed.');
     }
+  };
+
+  const handleProfileSubmit = () => {
+    alert('Profile saved!');
   };
 
   return (
@@ -92,9 +111,7 @@ function App() {
               <button className="cart-btn" onClick={() => setShowCart(!showCart)}>
                 Cart ({cartItems.length})
               </button>
-              <button className="logout-btn" onClick={handleLogout}>
-                Logout
-              </button>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
             </div>
           </div>
 
@@ -105,14 +122,14 @@ function App() {
                 <p>No items in cart.</p>
               ) : (
                 <>
-                  {cartItems.map((item, idx) => (
-                    <div key={idx} className="cart-item">
+                  {cartItems.map((item, i) => (
+                    <div key={i} className="cart-item">
                       <p>{item.name} — ₹{item.price}</p>
-                      <button className="remove-btn" onClick={() => handleRemoveFromCart(idx)}>Remove</button>
+                      <button className="remove-btn" onClick={() => handleRemoveFromCart(i)}>Remove</button>
                     </div>
                   ))}
                   <hr />
-                  <p>Total: ₹{totalAmount}</p>
+                  <p>Total: ₹{total}</p>
                   <p>GST (18%): ₹{gst}</p>
                   <h4>Grand Total: ₹{grandTotal}</h4>
                   <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
@@ -121,19 +138,39 @@ function App() {
             </div>
           )}
 
+          {showAddressForm && (
+            <div className="cart-dropdown">
+              <h3>Enter Shipping Address</h3>
+              <textarea
+                placeholder="Enter full address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                rows={4}
+                style={{ width: '100%', borderRadius: '8px', padding: '10px' }}
+              />
+              <br />
+              <button className="buy-now-btn" onClick={submitOrderWithAddress}>Submit Order</button>
+            </div>
+          )}
+
           <Routes>
             <Route path="/" element={<HomePage handleAddToCart={handleAddToCart} />} />
             <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} />} />
+            <Route path="/profile" element={
+              <ProfilePage
+                formData={formData}
+                handleChange={handleChange}
+                handleProfileSubmit={handleProfileSubmit}
+              />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/profile" element={<ProfilePage formData={formData} setFormData={setFormData} />} />
           </Routes>
         </>
       ) : (
         <LoginPage
           formData={formData}
           handleChange={handleChange}
-          handleSignup={handleSignup}
           handleLogin={handleLogin}
+          handleSignup={handleSignup}
           message={message}
         />
       )}
@@ -141,43 +178,37 @@ function App() {
   );
 }
 
-const LoginPage = ({ formData, handleChange, handleSignup, handleLogin, message }) => (
-  <div className="login-page">
-    <div className="login-box">
+const LoginPage = ({ formData, handleChange, handleLogin, handleSignup, message }) => (
+  <div className="login-container">
+    <div className="login-form">
       <h2>Login / Signup</h2>
-      <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-      <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
-      <div className="login-btn-group">
-        <button onClick={handleLogin}>Login</button>
-        <button onClick={handleSignup}>Signup</button>
-      </div>
-      <p className="login-message">{message}</p>
+      <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
+      <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleSignup}>Signup</button>
+      <p className="message">{message}</p>
     </div>
   </div>
 );
 
-const ProfilePage = ({ formData, setFormData }) => {
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  return (
-    <div className="profile-page">
-      <h2>User Profile</h2>
-      <label>
-        Full Name:
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
-      </label>
-      <label>
-        Email:
-        <input type="email" name="email" value={formData.email} onChange={handleChange} />
-      </label>
-      <p style={{ color: 'green' }}>Profile saved locally</p>
-    </div>
-  );
-};
+const ProfilePage = ({ formData, handleChange, handleProfileSubmit }) => (
+  <div className="profile-page">
+    <h2>User Profile</h2>
+    <label>
+      Full Name:
+      <input type="text" name="name" value={formData.name} onChange={handleChange} />
+    </label>
+    <label>
+      Email:
+      <input type="email" name="email" value={formData.email} onChange={handleChange} />
+    </label>
+    <button className="cart-btn" onClick={handleProfileSubmit}>Save Profile</button>
+  </div>
+);
 
 const HomePage = ({ handleAddToCart }) => {
   const products = [
-    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
+   { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
     { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp', specs: "Formal, Full Sleeve, Easy Iron" },
     { name: "Casual Shirt", price: 399, image: '/images/download3.webp', specs: "Polyester, Lightweight, Printed" },
     { name: "Saree", price: 1999, image: '/images/saree1.jpeg', specs: "Silk Blend, Traditional Look" },
@@ -192,13 +223,13 @@ const HomePage = ({ handleAddToCart }) => {
     <div className="products">
       <h2>Clothing & Accessories</h2>
       <div className="product-list">
-        {products.map((product, index) => (
-          <div className="product-card" key={index}>
-            <img src={product.image} alt={product.name} />
-            <h3>{product.name}</h3>
-            <p>₹{product.price}</p>
-            <p className="specs">{product.specs}</p>
-            <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+        {products.map((item, i) => (
+          <div key={i} className="product-card">
+            <img src={item.image} alt={item.name} />
+            <h4>{item.name}</h4>
+            <p>₹{item.price}</p>
+            <p className="specs">{item.specs}</p>
+            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
           </div>
         ))}
       </div>
@@ -207,7 +238,7 @@ const HomePage = ({ handleAddToCart }) => {
 };
 
 const NextPage = ({ handleAddToCart }) => {
-  const products = [
+  const electronics = [
     { name: "Apple Mobile", price: 55000, image: '/images/apple.webp', specs: "128GB, iOS 17, Dual Camera" },
     { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg', specs: "Glyph Interface, Snapdragon 778G+" },
     { name: "Samsung Mobile", price: 25000, image: '/images/samsung.webp', specs: "Galaxy Series, 5G, AMOLED Display" },
@@ -223,8 +254,8 @@ const NextPage = ({ handleAddToCart }) => {
     <div className="products">
       <h2>Electronics & Gadgets</h2>
       <div className="product-list">
-        {products.map((item, index) => (
-          <div className="product-card" key={index}>
+        {electronics.map((item, i) => (
+          <div key={i} className="product-card">
             <img src={item.image} alt={item.name} />
             <h4>{item.name}</h4>
             <p>₹{item.price}</p>
@@ -238,9 +269,9 @@ const NextPage = ({ handleAddToCart }) => {
 };
 
 const ContactPage = () => (
-  <div className="contact">
+  <div className="contact-page">
     <h2>Contact Us</h2>
-    <p>For any queries, contact: achyutk574@gmail.com</p>
+    <p>Email us at: <b>achyutk574@gmail.com</b></p>
   </div>
 );
 
