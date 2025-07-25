@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style-v2.css';
 
 function App() {
@@ -119,42 +120,9 @@ function App() {
         </div>
       </div>
 
-      {currentPage === 'home' && (
-        <div className="product-list">
-          {filteredProducts.map((product, index) => (
-            <div key={index} className="product-card">
-              <img src={product.image} alt={product.name} className="product-image" />
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <p><strong>Cost:</strong> ₹{product.cost}</p>
-              <button className="cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {currentPage === 'contact' && (
-        <div className="contact-page">
-          <h2>Contact Us</h2>
-          <p>Phone: 123-456-7890</p>
-          <p>Email: contact@example.com</p>
-        </div>
-      )}
-
-      {currentPage === 'next' && (
-        <div className="product-list">
-          {filteredProducts.map((product, index) => (
-            <div key={index} className="product-card">
-              <img src={product.image} alt={product.name} className="product-image" />
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <p><strong>Cost:</strong> ₹{product.cost}</p>
-              <button className="cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
-            </div>
-          ))}
-        </div>
-      )}
-
+      {currentPage === 'home' && <HomePage handleAddToCart={addToCart} />}
+      {currentPage === 'contact' && <ContactPage />}
+      {currentPage === 'next' && <NextPage handleAddToCart={addToCart} />}
       {currentPage === 'cart' && (
         <div className="cart-dropdown">
           <h2>Your Cart</h2>
@@ -163,7 +131,7 @@ function App() {
           ) : (
             cart.map((item, index) => (
               <div key={index} className="cart-item">
-                {item.name} - ₹{item.cost}
+                {item.name} - ₹{item.cost || item.price}
                 <button className="remove-btn" onClick={() => removeFromCart(index)}>Remove</button>
               </div>
             ))
@@ -193,37 +161,9 @@ function App() {
   );
 }
 
-const LoginPage = ({ formData, handleChange, handleLogin, handleSignup, message }) => (
-  <div className="login-container">
-    <div className="login-form">
-      <h2>Login / Signup</h2>
-      <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
-      <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleSignup}>Signup</button>
-      <p className="message">{message}</p>
-    </div>
-  </div>
-);
-
-const ProfilePage = ({ formData, handleChange, handleProfileSubmit }) => (
-  <div className="profile-page">
-    <h2>User Profile</h2>
-    <label>
-      Full Name:
-      <input type="text" name="name" value={formData.name} onChange={handleChange} />
-    </label>
-    <label>
-      Email:
-      <input type="email" name="email" value={formData.email} onChange={handleChange} />
-    </label>
-    <button className="cart-btn" onClick={handleProfileSubmit}>Save Profile</button>
-  </div>
-);
-
 const HomePage = ({ handleAddToCart }) => {
   const products = [
-   { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
+    { name: "Men's Shirt", price: 999, image: '/images/shopping1.webp', specs: "Cotton, Slim Fit, Navy Blue" },
     { name: "Men's Shirt", price: 999, image: '/images/shopping2.webp', specs: "Formal, Full Sleeve, Easy Iron" },
     { name: "Casual Shirt", price: 399, image: '/images/download3.webp', specs: "Polyester, Lightweight, Printed" },
     { name: "Saree", price: 1999, image: '/images/saree1.jpeg', specs: "Silk Blend, Traditional Look" },
