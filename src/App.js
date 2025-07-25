@@ -1,181 +1,195 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style-v2.css';
 
-const API = 'https://student-backend-wm44.onrender.com';
-
 function App() {
-  const [formData, setFormData] = useState({ username: '', password: '', name: '', email: '' });
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-  const [address, setAddress] = useState('');
-  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [currentPage, setCurrentPage] = useState('home');
+  const [profile, setProfile] = useState({ name: '', email: '' });
+  const [savedProfile, setSavedProfile] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  const handleSignup = async () => {
+  const fetchProducts = async () => {
     try {
-      const res = await axios.post(`${API}/signup`, formData);
-      setMessage(res.data.message);
-    } catch {
-      setMessage('Signup failed.');
+      const res = await axios.get('https://student-backend-wm44.onrender.com/products');
+      setProducts(res.data);
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
     }
   };
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(`${API}/login`, formData);
-      setMessage(res.data.message);
-      if (res.data.success) setLoggedIn(true);
-    } catch {
-      setMessage('Login failed.');
+      const res = await axios.post('https://student-backend-wm44.onrender.com/login', formData);
+      if (res.data.success) {
+        setLoggedIn(true);
+        setMessage('');
+      } else {
+        setMessage('Invalid credentials');
+      }
+    } catch (err) {
+      setMessage('Error logging in');
     }
   };
 
-  const handleLogout = () => {
-    setLoggedIn(false);
-    setFormData({ username: '', password: '', name: '', email: '' });
-    setMessage('');
-    setCartItems([]);
-    setShowCart(false);
-    setAddress('');
+  const addToCart = (product) => {
+    setCart([...cart, product]);
   };
 
-  const handleAddToCart = (item) => {
-    setCartItems([...cartItems, item]);
+  const removeFromCart = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1);
+    setCart(newCart);
   };
 
-  const handleRemoveFromCart = (index) => {
-    const updated = [...cartItems];
-    updated.splice(index, 1);
-    setCartItems(updated);
-  };
-
-  const total = cartItems.reduce((sum, i) => sum + i.price, 0);
-  const gst = +(total * 0.18).toFixed(2);
-  const grandTotal = +(total + gst).toFixed(2);
-
-  const handleBuyNow = () => {
-    if (cartItems.length === 0) return alert('Cart is empty!');
-    setShowAddressForm(true);
-  };
-
-  const submitOrderWithAddress = async () => {
-    if (!address.trim()) {
-      alert('Please enter your address');
-      return;
-    }
-
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const res = await axios.post(`${API}/order`, {
-        username: formData.username,
-        address,
-        items: cartItems,
-        total,
-        gst,
-        grandTotal
-      });
-
-      alert(res.data.message);
-      setCartItems([]);
-      setAddress('');
-      setShowCart(false);
-      setShowAddressForm(false);
-    } catch {
-      alert('Order failed.');
+      await axios.post('https://student-backend-wm44.onrender.com/profile', profile);
+      setSavedProfile(profile);
+      setProfile({ name: '', email: '' });
+    } catch (error) {
+      console.error('Failed to save profile:', error);
     }
   };
 
-  const handleProfileSubmit = () => {
-    alert('Profile saved!');
-  };
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (!loggedIn) {
+    return (
+      <div className="login-container">
+        <div className="login-form">
+          <h2>Login</h2>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+          <button onClick={handleLogin}>Login</button>
+          <div className="message">{message}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Router>
-      {loggedIn ? (
-        <>
-          <div className="navbar">
-            <div className="welcome-bar">Welcome, {formData.username}!</div>
-            <input className="search-bar" placeholder="Search..." />
-            <div className="nav-links">
-              <Link to="/">Home</Link>
-              <Link to="/page2">Next Page</Link>
-              <Link to="/profile">Profile</Link>
-              <Link to="/contact">Contact</Link>
-            </div>
-            <div className="nav-actions">
-              <button className="cart-btn" onClick={() => setShowCart(!showCart)}>
-                Cart ({cartItems.length})
-              </button>
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            </div>
+    <div>
+      <div className="navbar">
+        <div className="nav-left">
+          Welcome {savedProfile ? savedProfile.name : ''}
+        </div>
+        {savedProfile && (
+          <div className="saved-profile">
+            {savedProfile.name} ({savedProfile.email})
           </div>
+        )}
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="nav-links">
+          <button onClick={() => setCurrentPage('home')}>Home</button>
+          <button onClick={() => setCurrentPage('contact')}>Contact</button>
+          <button onClick={() => setCurrentPage('next')}>Next</button>
+          <button onClick={() => setCurrentPage('cart')}>Cart</button>
+          <button className="logout-btn" onClick={() => setLoggedIn(false)}>Logout</button>
+        </div>
+      </div>
 
-          {showCart && (
-            <div className="cart-dropdown">
-              <h3>Your Cart</h3>
-              {cartItems.length === 0 ? (
-                <p>No items in cart.</p>
-              ) : (
-                <>
-                  {cartItems.map((item, i) => (
-                    <div key={i} className="cart-item">
-                      <p>{item.name} — ₹{item.price}</p>
-                      <button className="remove-btn" onClick={() => handleRemoveFromCart(i)}>Remove</button>
-                    </div>
-                  ))}
-                  <hr />
-                  <p>Total: ₹{total}</p>
-                  <p>GST (18%): ₹{gst}</p>
-                  <h4>Grand Total: ₹{grandTotal}</h4>
-                  <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
-                </>
-              )}
+      {currentPage === 'home' && (
+        <div className="product-list">
+          {filteredProducts.map((product, index) => (
+            <div key={index} className="product-card">
+              <img src={product.image} alt={product.name} className="product-image" />
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <p><strong>Cost:</strong> ₹{product.cost}</p>
+              <button className="cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
             </div>
-          )}
-
-          {showAddressForm && (
-            <div className="cart-dropdown">
-              <h3>Enter Shipping Address</h3>
-              <textarea
-                placeholder="Enter full address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={4}
-                style={{ width: '100%', borderRadius: '8px', padding: '10px' }}
-              />
-              <br />
-              <button className="buy-now-btn" onClick={submitOrderWithAddress}>Submit Order</button>
-            </div>
-          )}
-
-          <Routes>
-            <Route path="/" element={<HomePage handleAddToCart={handleAddToCart} />} />
-            <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} />} />
-            <Route path="/profile" element={
-              <ProfilePage
-                formData={formData}
-                handleChange={handleChange}
-                handleProfileSubmit={handleProfileSubmit}
-              />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Routes>
-        </>
-      ) : (
-        <LoginPage
-          formData={formData}
-          handleChange={handleChange}
-          handleLogin={handleLogin}
-          handleSignup={handleSignup}
-          message={message}
-        />
+          ))}
+        </div>
       )}
-    </Router>
+
+      {currentPage === 'contact' && (
+        <div className="contact-page">
+          <h2>Contact Us</h2>
+          <p>Phone: 123-456-7890</p>
+          <p>Email: contact@example.com</p>
+        </div>
+      )}
+
+      {currentPage === 'next' && (
+        <div className="product-list">
+          {filteredProducts.map((product, index) => (
+            <div key={index} className="product-card">
+              <img src={product.image} alt={product.name} className="product-image" />
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <p><strong>Cost:</strong> ₹{product.cost}</p>
+              <button className="cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {currentPage === 'cart' && (
+        <div className="cart-dropdown">
+          <h2>Your Cart</h2>
+          {cart.length === 0 ? (
+            <p>No items in cart.</p>
+          ) : (
+            cart.map((item, index) => (
+              <div key={index} className="cart-item">
+                {item.name} - ₹{item.cost}
+                <button className="remove-btn" onClick={() => removeFromCart(index)}>Remove</button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {currentPage === 'profile' && (
+        <form className="profile-form" onSubmit={handleProfileSubmit}>
+          <h2>Profile</h2>
+          <input
+            type="text"
+            placeholder="Name"
+            value={profile.name}
+            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={profile.email}
+            onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+          />
+          <button type="submit">Save Profile</button>
+        </form>
+      )}
+    </div>
   );
 }
 
