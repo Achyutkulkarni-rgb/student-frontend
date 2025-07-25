@@ -219,7 +219,7 @@ body {
 .navbar {
   display: flex;
   justify-content: flex-end;
-  background-color: whitesmoke;
+  background-color: black;
   padding: 10px;
 }
 
