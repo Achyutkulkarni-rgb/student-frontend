@@ -21,7 +21,7 @@ function App() {
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post(${API}/signup, formData);
+      const res = await axios.post($,{API}/signup, formData);
       setMessage(res.data.message);
     } catch {
       setMessage('Signup failed.');
@@ -30,7 +30,7 @@ function App() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(${API}/login, formData);
+      const res = await axios.post($,{API}/login, formData);
       setMessage(res.data.message);
       if (res.data.success) setLoggedIn(true);
     } catch {
