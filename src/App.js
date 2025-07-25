@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './style-v2.css';
@@ -100,7 +100,8 @@ function App() {
       {loggedIn ? (
         <>
           <div className="navbar">
-            <button className="welcome-btn">Welcome, {formData.username}</button>
+            <div className="welcome-bar">Welcome, {formData.username}!</div>
+            <input className="search-bar" placeholder="Search..." />
             <div className="nav-links">
               <Link to="/">Home</Link>
               <Link to="/page2">Next Page</Link>
