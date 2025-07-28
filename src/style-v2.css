@@ -1,3 +1,11 @@
+/* Base Reset */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
 /* Navbar Styles */
 .navbar {
   display: flex;
@@ -23,7 +31,7 @@
 }
 
 .nav-links a {
-  color: #eaeaea; /* updated for better visibility */
+  color: #eaeaea;
   text-decoration: none;
   margin: 0 10px;
   font-weight: 500;
@@ -34,26 +42,82 @@
   text-decoration: underline;
 }
 
+.nav-links button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background-color: whitesmoke;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-/* Product Grid and Image */
+.logout-btn {
+  background-color: #ff5252;
+  color: white;
+}
+
+/* Welcome + Profile Line */
+.top-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 25px;
+  background-color: #f4f4f4;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Search Bar */
+.search-bar {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.search-bar input {
+  width: 300px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Slider Buttons */
+.slider-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  gap: 20px;
+}
+
+.slider-buttons button {
+  padding: 8px 20px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.slider-buttons button:hover {
+  background-color: #0056b3;
+}
+
+/* Product Grid */
+.product-list,
 .shop-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 20px;
-}
-
-.product-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
   justify-items: center;
-  padding: 20px;
 }
 
 .product-card {
-  border: 1px solid #ccc;
-  padding: 15px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
   width: 250px;
 }
@@ -69,17 +133,15 @@
   margin: 0 auto 10px auto;
 }
 
-/* Search Bar */
-.search-bar {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.search-bar input {
-  width: 300px;
-  padding: 10px;
+.cart-btn,
+.buy-btn {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  margin-top: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 /* Cart Dropdown */
@@ -112,7 +174,7 @@
   border-radius: 3px;
 }
 
-/* Login Page - NEW Updated Style */
+/* Login Page */
 .login-container {
   height: 100vh;
   display: flex;
@@ -128,7 +190,6 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 400px;
-  box-sizing: border-box;
   text-align: center;
 }
 
@@ -137,7 +198,8 @@
   color: #333;
 }
 
-.login-form input {
+.login-form input,
+.profile-form input {
   width: 100%;
   padding: 12px 14px;
   margin-bottom: 15px;
@@ -146,7 +208,8 @@
   font-size: 16px;
 }
 
-.login-form button {
+.login-form button,
+.profile-form button {
   width: 100%;
   padding: 12px;
   background-color: #00bcd4;
@@ -159,7 +222,8 @@
   transition: background 0.3s ease;
 }
 
-.login-form button:hover {
+.login-form button:hover,
+.profile-form button:hover {
   background-color: #008c9e;
 }
 
@@ -169,12 +233,7 @@
   font-size: 14px;
 }
 
-/* Contact Page */
-.contact-page {
-  text-align: center;
-  padding: 40px;
-}
-
+/* Profile Form */
 .profile-form {
   max-width: 400px;
   margin: 40px auto;
@@ -185,121 +244,10 @@
   text-align: center;
 }
 
-.profile-form input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.profile-form button {
-  background-color: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.profile-form button:hover {
-  background-color: #388e3c;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar {
-  display: flex;
-  justify-content: flex-end;
-  background-color: black;
-  padding: 10px;
-}
-
-.nav-links button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  background-color: whitesmoke;
-  color: black;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.logout-btn {
-  background-color: #ff5252;
-  color: white;
-}
-
-.product-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding: 20px;
-  gap: 20px;
-}
-
-.product-card {
-  background-color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.cart-btn {
-  padding: 8px 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  margin-top: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.login-form {
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.login-form input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 80%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.login-form button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
+/* Contact Page */
 .contact-page {
-  padding: 20px;
   text-align: center;
+  padding: 40px;
 }
 
 .contact-page input {
@@ -310,5 +258,3 @@ body {
   border: 1px solid #ccc;
   width: 300px;
 }
-
-  
