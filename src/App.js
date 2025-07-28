@@ -2,18 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import './style-v2.css';
 
 const API = 'https://student-backend-wm44.onrender.com';
-const navigate = useNavigate();
-useEffect(() => {
-  const term = searchTerm.toLowerCase();
-  if (term === "kurthas") navigate("/page3");
-  else if (term === "tops") navigate("/page4");
-  else if (term === "sarees") navigate("/page5");
-  else if (term === "earrings") navigate("/page6");
-}, [searchTerm]);
-
 
 
   const kurthas = [
@@ -98,6 +90,8 @@ function App() {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSlider, setShowSlider] = useState(false);
+  const [buyNowItem, setBuyNowItem] = useState(null); // For single item "Buy Now"
+
 
   const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleSignup = async () => {
@@ -118,14 +112,41 @@ function App() {
 
   const handleBuyNow = () => { if(cartItems.length===0) return alert('Cart is empty!'); setShowAddressForm(true); };
   const submitOrderWithAddress = async () => {
-    if(!address.trim()) return alert('Please enter your address');
-    try {
-      const res = await axios.post(`${API}/order`, { username: formData.username, address, items: cartItems, total, gst, grandTotal });
-      alert(res.data.message);
-      setCartItems([]); setAddress(''); setShowCart(false); setShowAddressForm(false);
-    } catch { alert('Order failed.'); }
-  };
-  const handleProfileSubmit = () => alert('Profile saved!');
+  if (!address.trim()) return alert('Please enter your address');
+  try {
+    const itemsToOrder = buyNowItem ? [buyNowItem] : cartItems;
+    const totalPrice = itemsToOrder.reduce((sum, i) => sum + i.price, 0);
+    const gstAmount = +(totalPrice * 0.18).toFixed(2);
+    const finalAmount = +(totalPrice + gstAmount).toFixed(2);
+
+    const res = await axios.post(`${API}/order`, {
+      username: formData.username,
+      address,
+      items: itemsToOrder,
+      total: totalPrice,
+      gst: gstAmount,
+      grandTotal: finalAmount,
+    });
+
+    alert(res.data.message);
+    if (!buyNowItem) setCartItems([]);
+    setBuyNowItem(null);
+    setAddress('');
+    setShowCart(false);
+    setShowAddressForm(false);
+  } catch {
+    alert('Order failed.');
+  }
+};
+
+const handleBuy = (item) => {
+  setBuyNowItem(item);
+  setShowAddressForm(true);
+};
+const handleProfileSubmit = () => {
+  alert('Profile saved!');
+};
+
 
   return (
     <Router>
@@ -194,7 +215,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage handleAddToCart={handleAddToCart} searchTerm={searchTerm} />} />
-          <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} searchTerm={searchTerm} />} />
+          <Route path="/page2" element={<NextPage handleAddToCart={handleAddToCart} handleBuy={handleBuy} searchTerm={searchTerm} />} />
           <Route path="/page3" element={<GenericPage title="Kurthas" items={kurthas} handleAddToCart={handleAddToCart} searchTerm={searchTerm} />} />
           <Route path="/page4" element={<GenericPage title="Tops" items={tops} handleAddToCart={handleAddToCart} searchTerm={searchTerm} />} />
           <Route path="/page5" element={<GenericPage title="Sarees" items={sarees} handleAddToCart={handleAddToCart} searchTerm={searchTerm} />} />
@@ -272,7 +293,7 @@ const HomePage = ({ handleAddToCart, searchTerm }) => {
   );
 };
 
-const NextPage = ({ handleAddToCart, searchTerm }) => {
+const NextPage = ({ handleAddToCart, handleBuy, searchTerm }) => {
   const electronics = [
     { name: "Apple Mobile", price: 55000, image: '/images/apple.webp', specs: "128GB, iOS 17, Dual Camera" },
      { name: "Nothing Mobile", price: 30000, image: '/images/ntg.jpeg', specs: "Glyph Interface, Snapdragon 778G+" },
