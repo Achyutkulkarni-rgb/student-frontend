@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './style-v2.css';
 
 const API = 'https://student-backend-wm44.onrender.com';
+const navigate = useNavigate();
+useEffect(() => {
+  const term = searchTerm.toLowerCase();
+  if (term === "kurthas") navigate("/page3");
+  else if (term === "tops") navigate("/page4");
+  else if (term === "sarees") navigate("/page5");
+  else if (term === "earrings") navigate("/page6");
+}, [searchTerm]);
+
 
 
   const kurthas = [
@@ -43,15 +53,15 @@ const API = 'https://student-backend-wm44.onrender.com';
   ];
 
   const earrings = [
-    { name: "Jhumkas", price: 299, image: '/images/earring1.webp', specs: "Silver Plated" },
-    { name: "Stud Earrings", price: 199, image: '/images/earring2.webp', specs: "Minimalist Design" },
-    { name: "Hoop Earrings", price: 249, image: '/images/earring3.webp', specs: "Trendy" },
-    { name: "Danglers", price: 349, image: '/images/earring4.webp', specs: "Long and Elegant" },
-    { name: "Chandbali", price: 399, image: '/images/earring5.webp', specs: "Wedding Style" },
-    { name: "Kundan Earrings", price: 499, image: '/images/earring6.webp', specs: "Royal Look" },
-    { name: "Meenakari Earrings", price: 449, image: '/images/earring7.webp', specs: "Colorful Traditional" },
-    { name: "Pearl Earrings", price: 279, image: '/images/earring8.webp', specs: "Classic" },
-    { name: "Oxidized Earrings", price: 329, image: '/images/earring9.webp', specs: "Boho Style" },
+    { name: "Jhumkas", price: 299, image: '/images/ear1.webp', specs: "Silver Plated" },
+    { name: "Stud Earrings", price: 199, image: '/images/ear2.webp', specs: "Minimalist Design" },
+    { name: "Hoop Earrings", price: 249, image: '/images/ear3.webp', specs: "Trendy" },
+    { name: "Danglers", price: 349, image: '/images/ear4.webp', specs: "Long and Elegant" },
+    { name: "Chandbali", price: 399, image: '/images/ear5.webp', specs: "Wedding Style" },
+    { name: "Kundan Earrings", price: 499, image: '/images/ear6.webp', specs: "Royal Look" },
+    { name: "Meenakari Earrings", price: 449, image: '/images/ear7.webp', specs: "Colorful Traditional" },
+    { name: "Pearl Earrings", price: 279, image: '/images/ear8.webp', specs: "Classic" },
+    { name: "Oxidized Earrings", price: 329, image: '/images/ear9.webp', specs: "Boho Style" },
   ];
 
 // New Generic page for categories
@@ -280,20 +290,21 @@ const NextPage = ({ handleAddToCart, searchTerm }) => {
     item.specs.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    <div className="products">
-      <h2>Electronics & Gadgets</h2>
-      <div className="product-list">
-        {filtered.map((item, i) => (
-          <div key={i} className="product-card">
-            <img src={item.image} alt={item.name}/>
-            <h4>{item.name}</h4>
-            <p>₹{item.price}</p>
-            <p className="specs">{item.specs}</p>
-            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
-          </div>
-        ))}
+   <div className="products">
+  <h2>Electronics & Gadgets</h2>
+  <div className="product-list">
+    {filtered.map((item, i) => (
+      <div key={i} className="product-card">
+        <img src={item.image} alt={item.name} />
+        <h4>{item.name}</h4>
+        <p>₹{item.price}</p>
+        <p className="specs">{item.specs}</p>
+        <button className="cart-btn" onClick={() => handleAddToCart(item)}>Add to Cart</button>
+        <button className="buy-btn" onClick={() => handleBuy(item)}>Buy</button>
       </div>
-    </div>
+    ))}
+  </div>
+</div>
   );
 };
 
