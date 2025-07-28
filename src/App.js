@@ -206,12 +206,27 @@ function App() {
 }
 
 const LoginPage = ({ formData, handleChange, handleLogin, handleSignup, message }) => (
-  /* unchanged */
+  <div className="login-container">
+    <div className="login-form">
+      <h2>Login / Signup</h2>
+      <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
+      <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleSignup}>Signup</button>
+      <p className="message">{message}</p>
+    </div>
+  </div>
 );
 
 const ProfilePage = ({ formData, handleChange, handleProfileSubmit }) => (
-  /* unchanged */
+  <div className="profile-page">
+    <h2>User Profile</h2>
+    <label>Full Name: <input type="text" name="name" value={formData.name} onChange={handleChange} /></label>
+    <label>Email: <input type="email" name="email" value={formData.email} onChange={handleChange} /></label>
+    <button className="cart-btn" onClick={handleProfileSubmit}>Save Profile</button>
+  </div>
 );
+
 
 const HomePage = ({ handleAddToCart, searchTerm }) => {
   const products = [
